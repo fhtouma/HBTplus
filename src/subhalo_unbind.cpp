@@ -23,8 +23,8 @@ static HBTInt PartitionBindingEnergy(vector <ParticleEnergy_t> &Elist, const siz
 {//similar to the C++ partition() func
   if(len==0) return 0;
   if(len==1) return Elist[0].E<0;
-  
-  ParticleEnergy_t Etmp=Elist[0]; 
+
+  ParticleEnergy_t Etmp=Elist[0];
   auto iterforward=Elist.begin(), iterbackward=Elist.begin()+len;
   while(true)
   {
@@ -105,14 +105,14 @@ public:
   {
 	HBTInt i,j;
 	double svx,svy,svz,msum;
-	
+
 	if(0==NumPart) return 0.;
-	if(1==NumPart) 
+	if(1==NumPart)
 	{
 	  copyHBTxyz(CoV, GetPhysicalVelocity(0));
 	  return GetMass(0);
 	}
-	
+
 	svx=svy=svz=0.;
 	msum=0.;
 	#pragma omp parallel for reduction(+:msum, svx, svy, svz) if(NumPart>100)
@@ -125,7 +125,7 @@ public:
 	  svy+=v[1]*m;
 	  svz+=v[2]*m;
 	}
-	
+
 	CoV[0]=svx/msum;
 	CoV[1]=svy/msum;
 	CoV[2]=svz/msum;
@@ -136,18 +136,18 @@ public:
   {
 	HBTInt i,j;
 	double sx,sy,sz,origin[3],msum;
-	
+
 	if(0==NumPart) return 0.;
-	if(1==NumPart) 
+	if(1==NumPart)
 	{
 	  copyHBTxyz(CoM, GetComovingPosition(0));
 	  return GetMass(0);
 	}
-	
+
 	if(HBTConfig.PeriodicBoundaryOn)
 	  for(j=0;j<3;j++)
 		origin[j]=GetComovingPosition(0)[j];
-	
+
 	sx=sy=sz=0.;
 	msum=0.;
 	#pragma omp parallel for reduction(+:msum, sx, sy, sz) if(NumPart>100)
@@ -184,7 +184,7 @@ public:
   void AverageKinematics(float &SpecificPotentialEnergy, float &SpecificKineticEnergy, float SpecificAngularMomentum[3], HBTInt NumPart, const HBTxyz & refPos, const HBTxyz &refVel)
   /*obtain specific potential, kinetic energy, and angular momentum for the first NumPart particles
    * all quantities are physical
-   * 
+   *
    * Note there is a slight inconsistency in the energy since they were calculated from the previous unbinding loop, but the refVel has been updated.
    */
   {
@@ -266,20 +266,20 @@ void Subhalo_t::Unbind(const ParticleSnapshot_t &snapshot)
 /* remove unbound particles.
  * this will update Nbound, Mbound, NboundType, MboundType, the particle list, and kinematic properties (specific potential, kinetic energy, angular momentum, the most bound and average positions and velocities)
  * the returned particle list will be ordered by binding energy.
- * 
+ *
  * the reference frame should already be initialized before unbinding.
  */
 {
   HBTInt MaxSampleSize=HBTConfig.MaxSampleSizeOfPotentialEstimate;
   bool RefineMostboundParticle=(MaxSampleSize>0&&HBTConfig.RefineMostboundParticle);
   HBTReal BoundMassPrecision=HBTConfig.BoundMassPrecision;
-  
+
   if(Particles.size()<HBTConfig.MinNumPartOfSub)//not enough src particles, can be due to masking
   {
       if(IsAlive())
           SnapshotIndexOfDeath=snapshot.GetSnapshotIndex();
   }
-  
+
   if(Particles.size()==0)
   {
     Nbound=0;
@@ -290,7 +290,7 @@ void Subhalo_t::Unbind(const ParticleSnapshot_t &snapshot)
 #endif
     return;
   }
-  if(Particles.size()==1) 
+  if(Particles.size()==1)
   {
 	Nbound=1;
 	Mbound=snapshot.GetMass(Particles[0]);
@@ -305,14 +305,14 @@ void Subhalo_t::Unbind(const ParticleSnapshot_t &snapshot)
   HBTxyz OldRefPos, OldRefVel;
   auto &RefPos=ComovingAveragePosition;
   auto &RefVel=PhysicalAverageVelocity;
-  
-  HBTInt OldMostboundParticle=Particles[0];//backup 
+
+  HBTInt OldMostboundParticle=Particles[0];//backup
   GravityTree_t tree;
   tree.Reserve(Particles.size());
   Nbound=Particles.size(); //start from full set
   if(MaxSampleSize>0&&Nbound>MaxSampleSize)	random_shuffle(Particles.begin(), Particles.end()); //shuffle for easy resampling later.
-  HBTInt Nlast; 
-  
+  HBTInt Nlast;
+
   vector <ParticleEnergy_t> Elist(Nbound);
 	for(HBTInt i=0;i<Nbound;i++)
 	  Elist[i].pid=Particles[i];
@@ -326,7 +326,7 @@ void Subhalo_t::Unbind(const ParticleSnapshot_t &snapshot)
 		snapshot.RelativeVelocity(OldRefPos, OldRefVel, RefPos, RefVel, RefVelDiff);
 		HBTReal dK=0.5*VecNorm(RefVelDiff);
 		EnergySnapshot_t ESnapCorrection(&Elist[Nbound], Nlast-Nbound, snapshot); //point to freshly removed particles
-		tree.Build(ESnapCorrection); 
+		tree.Build(ESnapCorrection);
 		#pragma omp parallel for if(Nlast>100)
 		for(HBTInt i=0;i<Nbound;i++)
 		{
@@ -429,7 +429,7 @@ void Subhalo_t::Unbind(const ParticleSnapshot_t &snapshot)
 	CountParticleTypes(snapshot);
 #ifdef SAVE_BINDING_ENERGY
 	Energies.resize(Nbound);
-#pragma omp paralle for if(Nbound>100)
+#pragma omp parallel for if(Nbound>100)
 	for(HBTInt i=0;i<Nbound;i++)
 	  Energies[i]=Elist[i].E;
 #endif
@@ -454,7 +454,7 @@ void Subhalo_t::RecursiveUnbind(SubhaloList_t &Subhalos, const ParticleSnapshot_
 void Subhalo_t::TruncateSource()
 {
   HBTInt Nsource;
-  if(Nbound<=1) 
+  if(Nbound<=1)
 	Nsource=Nbound;
   else
 	Nsource=Nbound*HBTConfig.SourceSubRelaxFactor;
@@ -463,7 +463,7 @@ void Subhalo_t::TruncateSource()
 }
 
 void SubhaloSnapshot_t::RefineParticles()
-{//it's more expensive to build an exclusive list. so do inclusive here. 
+{//it's more expensive to build an exclusive list. so do inclusive here.
   //TODO: ensure the inclusive unbinding is stable (contaminating particles from big subhaloes may hurdle the unbinding
 #ifdef _OPENMP
  if(ParallelizeHaloes) cout<<"Unbinding with HaloPara...\n";
@@ -478,7 +478,7 @@ void SubhaloSnapshot_t::RefineParticles()
 	    Subhalos[subid].Unbind(*SnapshotPointer);
 	    Subhalos[subid].TruncateSource();
   }
-#else 
+#else
   HBTInt NumHalos=MemberTable.SubGroups.size();
   #pragma omp parallel for schedule(dynamic,1) if(ParallelizeHaloes)
     for(HBTInt haloid=0;haloid<NumHalos;haloid++)
@@ -495,7 +495,7 @@ void SubhaloSnapshot_t::RefineParticles()
 	  central.RecursiveUnbind(Subhalos, *SnapshotPointer);
 	  nests.resize(old_membercount);//restore old satellite list
     }
-  //unbind field subs  
+  //unbind field subs
   #pragma omp parallel
   {
       HBTInt NumField=MemberTable.SubGroups[-1].size();
@@ -507,12 +507,12 @@ void SubhaloSnapshot_t::RefineParticles()
       }
     //unbind new-born subs
     HBTInt NumSubOld=MemberTable.AllMembers.size(), NumSub=Subhalos.size();
-    #pragma omp for schedule(dynamic,1) 
+    #pragma omp for schedule(dynamic,1)
       for(HBTInt i=NumSubOld;i<NumSub;i++)
       {
 	    Subhalos[i].Unbind(*SnapshotPointer);
-      }    
-    #pragma omp for schedule(dynamic,1) 
+      }
+    #pragma omp for schedule(dynamic,1)
       for(HBTInt i=0;i<NumSub;i++)
 	    Subhalos[i].TruncateSource();
   }
