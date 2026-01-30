@@ -3,7 +3,7 @@
  * To specify a list of snapshot, list the snapshot directories (one per line) in snapshotlist.txt and place it under your subhalo output directory.
  * 
  * This IO supports the following formats:
- *   SnapshotFormat: apostle, illustris
+ *   SnapshotFormat: apostle, illustris, illustrisTNG
  *   GroupFileFormat: apostle, apostle_particle_index,  //for eagle or apostle data
  *                    illustris, illustris_particle_index //for illustris or illustrisTNG data.
  *                    apostle_helucid, apostle_helucid_particle_index//for helucid data. the halo_id of helucid starts from 1
@@ -54,10 +54,12 @@ public:
   double   OmegaM0;
   double   OmegaLambda0;
   double   Mass[TypeMax];
-  TypeCounts_t  NumPart;
+  array <int, TypeMax> NumPart;
   TypeCounts_t NumPartTotal;
   HBTInt NumPartAll;
-  
+  // === 新增 ===
+  bool IsSingleFile = false; // 默认为 false (多文件模式)
+  // ============ 
   HBTInt NullGroupId;
   HBTInt MinGroupId;
   
@@ -101,10 +103,13 @@ class ApostleReader_t
   void ReadSnapshot(int ifile, Particle_t * Particles);
   void ReadGroupId(int ifile, ParticleHost_t *Particles, bool FlagReadParticleId);
   void ReadParticleIDs(int ifile, HBTInt *ParticleIDs);
+  void ReadGroupSnapshot(int ifile, Halo_t * Halos);
 public:
   void LoadSnapshot(int snapshotId, vector <Particle_t> &Particles, Cosmology_t &Cosmology);
+  void LoadSnapshotChunks(int snapshotId, vector <Particle_t> &Particles, Cosmology_t &Cosmology, int ifilemax);
   HBTInt LoadApostleGroups(int snapshotId, vector <Halo_t> &Halos);
   HBTInt LoadIllustrisGroups(int snapshotId, vector <Halo_t> &Halos);
+  void LoadIllustrisGroupsPosVel(int snapshotId, vector <Halo_t> &Halos);
 };
 
 extern bool IsHelucidGroup(const string &GroupFileFormat);
@@ -113,5 +118,6 @@ extern bool IsApostleGroup(const string &GroupFileFormat);
 extern bool IsIllustrisGroup(const string &GroupFileFormat);
 extern bool IsApostleSnap(const string &SnapshotFormat);
 extern bool IsIllustrisSnap(const string &SnapshotFormat);
+extern bool IsCosmological(const bool IsCosmological);
 }
 #endif

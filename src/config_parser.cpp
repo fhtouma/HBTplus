@@ -26,6 +26,7 @@ void Parameter_t::SetParameterValue(const string &line)
   else TrySetPar(SofteningHalo,6)
 #undef TrySetPar		
 #define TrySetPar(var) if(name==#var) ss>>var;
+  else TrySetPar(IsCosmological) // 添加这一行
   else TrySetPar(SnapshotFormat)
   else TrySetPar(GroupFileFormat)
   else TrySetPar(MaxConcurrentIO)
@@ -220,6 +221,7 @@ void Parameter_t::DumpParameters(const string &path)
   DumpPar(SofteningHalo)
   
   /*optional*/
+  DumpPar(IsCosmological) // 添加这一行，输出参数到日志
   DumpPar(SnapshotFormat)
   DumpPar(GroupFileFormat)
   DumpPar(MaxConcurrentIO)

@@ -32,6 +32,9 @@ public:
   HBTReal BoxSize; //to check the unit of snapshot according to the BoxSize in header
   HBTReal SofteningHalo;
   vector<bool> IsSet;
+
+  /* 在 optional 部分添加 IsCosmological */
+  bool IsCosmological; // 新增开关  
   
   /*optional*/
   string SnapshotFormat;
@@ -81,6 +84,7 @@ public:
   
   Parameter_t(): IsSet(NumberOfCompulsaryConfigEntries,false),SnapshotIdList(),SnapshotNameList()
   {
+    IsCosmological = true; // 默认为 true (宇宙学模拟)   
 	SnapshotFormat="gadget";
 	GroupFileFormat="gadget3_int";
 	MaxConcurrentIO=10;

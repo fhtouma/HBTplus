@@ -1,4 +1,4 @@
-EXE_HBT=HBT HBTdouble  HBT_majormerger_test  HBTi8 HBT.apostle HBT.apostle_thermal HBT.nostrip
+EXE_HBT=HBT HBTdouble  HBT_majormerger_test  HBTi8 HBT.apostle HBT.apostle_thermal HBT.nostrip HBT.tng
 EXE_FOF=FoF FoF.ll FoFdebug FoFdebug2
 EXE=$(EXE_HBT) $(EXE_FOF)
 
@@ -9,8 +9,9 @@ include $(HBTDIR)/Makefile.inc
 
 $(EXE): $(OBJS_COMM)
 
-HBT.apostle HBT.apostle_thermal: CXXFLAGS+=-DHBT_INT8 -DUNSIGNED_LONG_ID_OUTPUT
+HBT.tng HBT.apostle HBT.apostle_thermal: CXXFLAGS+=-DHBT_INT8 -DUNSIGNED_LONG_ID_OUTPUT
 HBT.apostle_thermal: CXXFLAGS+=-DUNBIND_WITH_THERMAL_ENERGY
+HBT.tng: CXXFLAGS+=-DHBT_REAL8
 
 HBTi8: CXXFLAGS+=-DHBT_INT8
 HBTdouble: CXXFLAGS+=-DHBT_REAL8 -DHBT_INT8 
@@ -21,7 +22,7 @@ $(EXE_HBT): HBT.o
 
 FoF.ll: CXXFLAGS+=-DFOF_METHOD=2
 $(EXE_FOF): OMPFLAG=
-$(EXE_FOF): CXXFLAGS+=-DDM_ONLY -DHBT_INT8
+$(EXE_FOF): CXXFLAGS+= -DDM_ONLY -DHBT_INT8
 # $(EXE_FOF): FoF.o
 # 	$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
 # 	rm FoF.o

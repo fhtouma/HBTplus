@@ -53,7 +53,8 @@ struct Cosmology_t
   
   void Set(double scalefactor, double omega0, double omegaLambda0)
   {
-	OmegaM0=omega0;
+    if (HBTConfig.IsCosmological) // 如果是宇宙学模拟，使用原有逻辑
+    {OmegaM0=omega0;
 	OmegaLambda0=omegaLambda0;
 	ScaleFactor=scalefactor;
 	double Hratio=sqrt(omega0 / (scalefactor * scalefactor * scalefactor) 
@@ -61,6 +62,15 @@ struct Cosmology_t
 		+ omegaLambda0);//Hubble param for the current catalogue;
 	Hz=Hratio*PhysicalConst::H0;
 	OmegaZ=omega0/(scalefactor*scalefactor*scalefactor)/Hratio/Hratio;
+    }
+    else // 如果是牛顿力学理想实验
+    {
+        OmegaM0=omega0; // 保留传入值或设为0
+        OmegaLambda0=omegaLambda0; // 保留传入值或设为0
+        ScaleFactor=1.0; // 强制 ScaleFactor 为 1
+        Hz=0.0; // 无哈勃膨胀
+        OmegaZ=0.0; // 相应的 OmegaZ 设为 0
+    }
   }
   void HaloVirialFactors(HBTReal &virialF_tophat, HBTReal &virialF_b200, HBTReal &virialF_c200) const;
   void SphericalOverdensitySize(float &Mvir, float &Rvir, HBTReal VirialFactor, const vector <HBTReal> &RSorted) const;
@@ -131,7 +141,7 @@ public:
 
 class ParticleSnapshot_t: public Snapshot_t
 {
-  typedef HBTInt ParticleIndex_t ;
+  typedef HBTInt ParticleIndex_t;
   typedef HBTInt ParticleId_t;
   typedef vector <ParticleIndex_t> IndexList_t;
   
@@ -175,6 +185,7 @@ public:
   const Particle_t & GetParticle(HBTInt index) const;
   
   void Load(int snapshot_index, bool fill_particle_hash=true);
+  void LoadChunks(int snapshot_index, bool fill_particle_hash, int ifilemax);
   void ConvertToRedshiftSpace(int iz);
 };
 

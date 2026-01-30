@@ -1,0 +1,21 @@
+#!/bin/sh
+#PBS -N test
+#PBS -l nodes=1:ppn=72
+###PBS -l mem=2200gb
+#PBS -l walltime=72:00:00
+#PBS -q fat
+
+cd $PBS_O_WORKDIR
+module purge
+module load compiler/gcc-10.2.0 hdf5/1.12.1-with-cxx-fort
+export OMP_NUM_THREADS=72
+
+#for snap in 99 89 81 67 57 50 40 33 25
+for snap in 67
+do
+    ./halo_prof_tnghydro_test ../configs/TNG300-1.conf $snap
+    echo "-----------------------------snap $snap is done--------------------------------------"
+    date
+done
+
+

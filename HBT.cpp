@@ -37,7 +37,30 @@ int main(int argc, char **argv)
 	subsnap.SetSnapshotIndex(isnap);
 
 	HaloSnapshot_t halosnap;
-	halosnap.Load(isnap);
+    // 修改开始：根据开关决定读取 Halo 还是创建全局 Halo
+    if (HBTConfig.IsCosmological)
+    {  
+    	halosnap.Load(isnap);
+    }
+    else
+    {
+        // 理想实验模式：不读取 FoF，将整个 Snapshot 当作一个 Halo
+        halosnap.SetSnapshotIndex(isnap);
+        halosnap.Halos.resize(1); // 只有一个 Halo
+        HBTInt np = partsnap.GetNumberOfParticles();
+        halosnap.Halos[0].Particles.resize(np);
+        halosnap.TotNumberOfParticles = np;
+        
+        // 并行填充所有粒子 ID
+        #pragma omp parallel for
+        for (HBTInt i = 0; i < np; i++)
+        {
+            halosnap.Halos[0].Particles[i] = partsnap.GetParticleId(i);
+        }
+        cout << "Ideal Simulation Mode: Created 1 fake halo with " << np << " particles." << endl;
+    }
+    // 修改结束    
+      
 	timer.Tick();
 	#pragma omp parallel
 	{

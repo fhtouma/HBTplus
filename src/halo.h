@@ -15,6 +15,8 @@ public:
   ParticleList_t Particles;
   HBTxyz ComovingAveragePosition;
   HBTxyz PhysicalAverageVelocity;
+  HBTInt GroupLen;
+  HBTReal RVir;
   HBTInt size()
   {
     return Particles.size();
@@ -38,6 +40,7 @@ public:
 	Load(snapshot_index);
   }
   void Load(int snapshot_index);
+  void LoadPosVel(int snapshot_index);
   void Clear();
   void ParticleIdToIndex(const ParticleSnapshot_t & snapshot);
   void ParticleIndexToId();

@@ -57,6 +57,22 @@ void ParticleSnapshot_t::Load(int snapshot_index, bool fill_particle_hash)
 	FillParticleHash();
 }
 
+void ParticleSnapshot_t::LoadChunks(int snapshot_index, bool fill_particle_hash, int ifilemax)
+{
+  SetSnapshotIndex(snapshot_index);
+  if(Apostle::IsIllustrisSnap(HBTConfig.SnapshotFormat))
+    Apostle::ApostleReader_t().LoadSnapshotChunks(SnapshotId, Particles, Cosmology, ifilemax);
+  else
+    cerr<<"not Illustris snapshot"<<endl;
+
+#ifdef DM_ONLY
+  assert(Cosmology.ParticleMass>0);
+#endif
+
+  if(fill_particle_hash)
+	FillParticleHash();
+}
+
 
 #ifdef TEST_snapshot_io
 #include "../config_parser.h"

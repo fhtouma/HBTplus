@@ -1,0 +1,60 @@
+[2025-06-19 03:16:52]
+    resources_used.cput = 00:09:51
+    resources_used.energy_used = 0
+    resources_used.mem = 1112016kb
+    resources_used.vmem = 1511548kb
+------------------------
+[2025-06-19 03:26:53]
+    resources_used.cput = 00:42:55
+    resources_used.energy_used = 0
+    resources_used.mem = 324230284kb
+    resources_used.vmem = 1287773000kb
+------------------------
+[2025-06-19 03:36:53]
+    resources_used.cput = 00:53:13
+    resources_used.energy_used = 0
+    resources_used.mem = 546617664kb
+    resources_used.vmem = 1287773000kb
+------------------------
+[2025-06-19 03:46:53]
+    resources_used.cput = 01:02:51
+    resources_used.energy_used = 0
+    resources_used.mem = 727225888kb
+    resources_used.vmem = 1287773000kb
+------------------------
+[2025-06-19 03:56:53]
+    resources_used.cput = 01:12:36
+    resources_used.energy_used = 0
+    resources_used.mem = 899264220kb
+    resources_used.vmem = 1287773064kb
+------------------------
+[2025-06-19 04:06:53]
+    resources_used.cput = 01:23:02
+    resources_used.energy_used = 0
+    resources_used.mem = 1100963500kb
+    resources_used.vmem = 1287773064kb
+------------------------
+[2025-06-19 04:16:53]
+    resources_used.cput = 02:04:23
+    resources_used.energy_used = 0
+    resources_used.mem = 1522659152kb
+    resources_used.vmem = 1542120556kb
+------------------------
+[2025-06-19 04:26:53]
+    resources_used.cput = 07:40:30
+    resources_used.energy_used = 0
+    resources_used.mem = 1776784696kb
+    resources_used.vmem = 1782817188kb
+------------------------
+[2025-06-19 04:36:53]
+    resources_used.cput = 20:15:53
+    resources_used.energy_used = 0
+    resources_used.mem = 1776784696kb
+    resources_used.vmem = 1782817188kb
+------------------------
+[2025-06-19 04:46:53]
+    resources_used.cput = 31:56:54
+    resources_used.energy_used = 0
+    resources_used.mem = 1776784696kb
+    resources_used.vmem = 1782817188kb
+------------------------

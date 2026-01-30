@@ -6,8 +6,7 @@ HBTDIR=..
 include $(HBTDIR)/Makefile.inc
 
 $(EXE): $(OBJS_COMM)
-$(EXE): CXXFLAGS+=-I.. -DHBT_INT8 #-DHBT_REAL8
+$(EXE): CXXFLAGS+=-I.. -DHBT_INT8 -DUNSIGNED_LONG_ID_OUTPUT #-DHBT_REAL8
 
 -include .Makefile_sync.inc
-
 

@@ -51,6 +51,18 @@ void HaloSnapshot_t::Load(int snapshot_index)
 	if(h.Particles.size()>NumPartOfLargestHalo) NumPartOfLargestHalo=h.Particles.size();
 }
 
+void HaloSnapshot_t::LoadPosVel(int snapshot_index)
+{
+  SetSnapshotIndex(snapshot_index);
+  
+  string GroupFileFormat=HBTConfig.GroupFileFormat;
+  
+  if(Apostle::IsIllustrisGroup(GroupFileFormat))
+    Apostle::ApostleReader_t().LoadIllustrisGroupsPosVel(SnapshotId, Halos);
+  else
+    throw(runtime_error("unsupported LoadPosVel GroupFileFormat "+GroupFileFormat));
+}
+
 
 #ifdef TEST_halo_io
 #include "../config_parser.h"

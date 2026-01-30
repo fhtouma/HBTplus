@@ -8,9 +8,10 @@ LINK.o=$(CXX) $(LDFLAGS) $(TARGET_ARCH) #invoke c++ compiler for linking
 
 #HDFINC=-I/usr/include/hdf5/serial/
 #HDFLIB=-L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -lhdf5
-HDFINC=
-HDFLIB=-lhdf5
+HDFINC=-I/usr/include/hdf5/serial/ -DH5_USE_16_API
+HDFLIB=-L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -lhdf5 -lz
 HDFINC+=-Wno-literal-suffix #to disable the annoying literal-suffix warning with the hdf header
+
 
 ###comment out the following lines if you do not have GSL (for eigenvalue decomposition of inertial tensors)
 #GSLINC=
@@ -19,12 +20,12 @@ HDFINC+=-Wno-literal-suffix #to disable the annoying literal-suffix warning with
 ###comment up to here to disable GSL.
 
 ###for Dark Matter only simulations
-CXXFLAGS+=-DDM_ONLY
+#CXXFLAGS+=-DDM_ONLY
 ###
 
 ##enable these if you want to obtain (thermal) binding energy for each particle
 ###save binding energy:
-#CXXFLAGS+=-DSAVE_BINDING_ENERGY
+CXXFLAGS+=-DSAVE_BINDING_ENERGY
 ###
 ###load thermal energy (also set SaveSubParticleProperties to 1 in config file if you want to save thermal energy)
 #CXXFLAGS+=-DHAS_THERMAL_ENERGY
